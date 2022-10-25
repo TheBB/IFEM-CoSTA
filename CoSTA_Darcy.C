@@ -25,6 +25,7 @@
 #include "ElmMats.h"
 #include "ElmNorm.h"
 #include "ExprFunctions.h"
+#include "TractionField.h"
 #include "ForceIntegrator.h"
 #include "SIMconfigure.h"
 #include "SystemMatrix.h"
@@ -153,6 +154,9 @@ public:
     fs = dynamic_cast<EvalFunction*>(sourceC);
     if (fs)
       fs->setParam(name,value);
+    ds = dynamic_cast<DiracSum*>(sourceC);
+    if (ds)
+      ds->setParam(name,value);
   }
 };
 
@@ -252,17 +256,22 @@ public:
         if (v)
           v->setParam(name, value);
       }
+    }
 
-      for (auto& it : this->myScalars) {
-        EvalFunction* f = dynamic_cast<EvalFunction*>(it.second);
-        if (f)
-          f->setParam(name, value);
-      }
-      for (auto& it : this->myScalars) {
-        VecFuncExpr* v = dynamic_cast<VecFuncExpr*>(it.second);
-        if (v)
-          v->setParam(name, value);
-      }
+    for (auto& it : this->myScalars) {
+      EvalFunction* f = dynamic_cast<EvalFunction*>(it.second);
+      if (f)
+        f->setParam(name, value);
+    }
+    for (auto& it : this->myScalars) {
+      VecFuncExpr* v = dynamic_cast<VecFuncExpr*>(it.second);
+      if (v)
+        v->setParam(name, value);
+    }
+    for (auto& it : this->myTracs) {
+      PressureField* pf = dynamic_cast<PressureField*>(it.second);
+      if (pf)
+        pf->setParam(name, value);
     }
   }
 
